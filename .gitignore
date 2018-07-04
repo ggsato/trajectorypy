@@ -1,4 +1,6 @@
 .eggs/
 .pytest_cache/
 trajectorypy.egg-info/
+build/
+dist/
 *.pyc
