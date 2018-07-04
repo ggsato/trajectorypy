@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='trajectorypy',
-    version='1.0.0-a2',
+    version='1.0.0-a3',
     description='trajectorypy is a library to track a trajectory',
     url='https://github.com/ggsato/trajectorypy',
     author='Takenori Sato',
