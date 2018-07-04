@@ -154,7 +154,7 @@ class MassiveObject(object):
 
         return a float value (-pi, pi)  
         """
-        if self.observed_travel_distance < max(*self._filter.vehicle_size):
+        if self.observed_travel_distance < max(*self._filter.object_size):
             return None
 
         return MassiveObject.radian_from_points(self._xs[0], self._xs[-1])
@@ -271,9 +271,9 @@ class MassiveObject(object):
         distance = MassiveObject.distance_from_points(from_point, z)
 
         # accept if both residuals are within 99% range(3 * std_devs)
-        accept = (residual_x < std_dev_x*3) and (residual_y < std_dev_y*3) and not (diff_heading > self._maximum_heading_diff_allowed and distance > max(*self._filter.vehicle_size) * self._filter.detection_error_ratio)
+        accept = (residual_x < std_dev_x*3) and (residual_y < std_dev_y*3) and not (diff_heading > self._maximum_heading_diff_allowed and distance > max(*self._filter.object_size) * self._filter.detection_error_ratio)
 
-        self._z_candidates.append([z, next_x.T, [residual_x, residual_y], [std_dev_x, std_dev_y], accept, diff_heading, distance, max(*self._filter.vehicle_size)])
+        self._z_candidates.append([z, next_x.T, [residual_x, residual_y], [std_dev_x, std_dev_y], accept, diff_heading, distance, max(*self._filter.object_size)])
         print('z_candidate: {}'.format(self._z_candidates[-1]))
 
         return accept
@@ -303,7 +303,7 @@ class MassiveObject(object):
         return [self._covs[-1][2][2], self._covs[-1][5][5]]
 
     def update_object_size(self, new_detection_size):
-        self._filter.update_vehicle_size(new_detection_size)
+        self._filter.update_object_size(new_detection_size)
 
     def history(self):
 
