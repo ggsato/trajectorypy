@@ -15,7 +15,7 @@ class TrajectoryFilter(KalmanFilter):
     A massive object this filter can track has its size in a 2D space, and moves with a constant acceleration.
 
     Variances in P, Q, and R are calculated from the given object size to make configurations easier.
-    Note that R is a simlified version, where only the highest order values are non zero.
+    Note that R is a simplified version, where only the highest order values are non zero.
     """
     
     DIM_X = 6
@@ -271,16 +271,16 @@ class MassiveObject(object):
         distance = MassiveObject.distance_from_points(from_point, z)
 
         # accept if both residuals are within 99% range(3 * std_devs)
+        # but reject when the heading difference and the moving distance are more than their thresholds
         accept = (residual_x < std_dev_x*3) and (residual_y < std_dev_y*3) and not (diff_heading > self._maximum_heading_diff_allowed and distance > max(*self._filter.object_size) * self._filter.detection_error_ratio)
 
         self._z_candidates.append([z, next_x.T, [residual_x, residual_y], [std_dev_x, std_dev_y], accept, diff_heading, distance, max(*self._filter.object_size)])
-        print('z_candidate: {}'.format(self._z_candidates[-1]))
 
         return accept
 
     @property
     def variance(self):
-        """ the variance of x """
+        """ the variances of locations """
         if len(self._covs) == 0:
             return None
 
@@ -288,7 +288,7 @@ class MassiveObject(object):
 
     @property
     def variance_speed(self):
-        """ the variance of x speed """
+        """ the variances of speeds """
         if len(self._covs) == 0:
             return None
 
@@ -296,7 +296,7 @@ class MassiveObject(object):
 
     @property
     def variance_accel(self):
-        """ the variance of x accel """
+        """ the variances of accelerations """
         if len(self._covs) == 0:
             return None
 
