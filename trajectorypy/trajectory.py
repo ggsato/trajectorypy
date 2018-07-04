@@ -146,7 +146,6 @@ class MassiveObject(object):
         """ the direction of this MassiveObject instance
 
         A direction ranges from -pi(-180) to pi(180),
-        in the OpenCV coordinate system, the upper left corner is the origin.
 
         The difference between a direction and a heading is that 
         heading is the current direction, which could vary frequently,
@@ -163,8 +162,7 @@ class MassiveObject(object):
     def heading(self):
         """ the current direction of this MassiveObject instance
 
-        A direction ranges from -pi(-180) to pi(180),
-        in the OpenCV coordinate system, the upper left corner is the origin.
+        A heading ranges from -pi(-180) to pi(180),
 
         return a float value (-pi, pi)  
         """
@@ -243,7 +241,7 @@ class MassiveObject(object):
         self._z_candidates = []
 
     def accept_measurement(self, z):
-        """ check if a given measurement is aacceptable
+        """ check if a given measurement is acceptable
         """
         # calculate the next predicted position
 
