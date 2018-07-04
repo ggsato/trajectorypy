@@ -36,9 +36,9 @@ class TrajectoryFilter(KalmanFilter):
     ])
     
     
-    def __init__(self, x0, object_size, detection_error_ratio=0.1, decay=0.1, coefficient=0.1):
+    def __init__(self, x0, object_size, object_size_error_ratio=0.1, decay=0.1, coefficient=0.1):
         super(TrajectoryFilter, self).__init__(dim_x=TrajectoryFilter.DIM_X, dim_z=TrajectoryFilter.DIM_Z)
-        self._detection_error_ratio = detection_error_ratio
+        self._object_size_error_ratio = object_size_error_ratio
         
         self.P = np.array([
             [1, 0, 0, 0, 0, 0],
@@ -79,7 +79,7 @@ class TrajectoryFilter(KalmanFilter):
         self._object_size = np.array([new_object_size[0], new_object_size[1]])
 
         # key statistical properties
-        self._std_devs = self._object_size * self._detection_error_ratio / 3
+        self._std_devs = self._object_size * self._object_size_error_ratio / 3
         self._variances = self._std_devs **2
 
         self.Q = self.Q_BASE * 1
@@ -96,8 +96,8 @@ class TrajectoryFilter(KalmanFilter):
         return self._object_size
 
     @property
-    def detection_error_ratio(self):
-        return self._detection_error_ratio
+    def object_size_error_ratio(self):
+        return self._object_size_error_ratio
     
 
 class MassiveObject(object):
@@ -106,9 +106,9 @@ class MassiveObject(object):
 
     _very_small_value = 0.000001
 
-    def __init__(self, x0, object_size, detection_error_ratio=0.5, decay=0.1, coefficient=0.5, maximum_heading_diff_allowed_in_pi=0.333):
+    def __init__(self, x0, object_size, object_size_error_ratio=0.5, decay=0.1, coefficient=0.5, maximum_heading_diff_allowed_in_pi=0.333):
         super(MassiveObject, self).__init__()
-        self._filter = TrajectoryFilter(x0, object_size, detection_error_ratio, decay=decay, coefficient=coefficient)
+        self._filter = TrajectoryFilter(x0, object_size, object_size_error_ratio, decay=decay, coefficient=coefficient)
         self._maximum_heading_diff_allowed = math.pi * maximum_heading_diff_allowed_in_pi
         # histories
         self._zs = []
@@ -270,7 +270,7 @@ class MassiveObject(object):
 
         # accept if both residuals are within 99% range(3 * std_devs)
         # but reject when the heading difference and the moving distance are more than their thresholds
-        accept = (residual_x < std_dev_x*3) and (residual_y < std_dev_y*3) and not (diff_heading > self._maximum_heading_diff_allowed and distance > max(*self._filter.object_size) * self._filter.detection_error_ratio)
+        accept = (residual_x < std_dev_x*3) and (residual_y < std_dev_y*3) and not (diff_heading > self._maximum_heading_diff_allowed and distance > max(*self._filter.object_size) * self._filter.object_size_error_ratio)
 
         self._z_candidates.append([z, next_x.T, [residual_x, residual_y], [std_dev_x, std_dev_y], accept, diff_heading, distance, max(*self._filter.object_size)])
 
@@ -300,8 +300,8 @@ class MassiveObject(object):
 
         return [self._covs[-1][2][2], self._covs[-1][5][5]]
 
-    def update_object_size(self, new_detection_size):
-        self._filter.update_object_size(new_detection_size)
+    def update_object_size(self, new_object_size_size):
+        self._filter.update_object_size(new_object_size_size)
 
     def history(self):
 
