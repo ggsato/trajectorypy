@@ -130,14 +130,14 @@ class MassiveObject(object):
         returns (x, y) or None if no location history
         """
         if len(self._xs) == 0:
-            return (self._filter.x[0], self._filter.x[3])
+            return [self._filter.x[0], self._filter.x[3]]
 
         return [self._xs[-1][0], self._xs[-1][3]]
 
     @property
     def measurement(self):
         if len(self._zs) == 0:
-            return (self._filter.x[0], self._filter.x[3])
+            return None
 
         return [self._zs[-1][0], self._zs[-1][1]]
 
@@ -195,7 +195,7 @@ class MassiveObject(object):
         if len(self._xs) == 0:
             return None
 
-        return (self._xs[-1][1], self._xs[-1][4])
+        return [self._xs[-1][1], self._xs[-1][4]]
 
     @property
     def observed_travel_distance(self):
@@ -247,7 +247,7 @@ class MassiveObject(object):
 
         next_x = self._filter.F.dot(self._filter.x)
 
-        # caclculate residuals
+        # calculate residuals
         residual_x = abs(z[0] - next_x[0])
         residual_y = abs(z[1] - next_x[3])
 
@@ -300,8 +300,8 @@ class MassiveObject(object):
 
         return [self._covs[-1][2][2], self._covs[-1][5][5]]
 
-    def update_object_size(self, new_object_size_size):
-        self._filter.update_object_size(new_object_size_size)
+    def update_object_size(self, new_object_size):
+        self._filter.update_object_size(new_object_size)
 
     def history(self):
 
