@@ -9,10 +9,14 @@ from filterpy.kalman import KalmanFilter
 class TrajectoryFilter(KalmanFilter):
     """ A KalmanFilter implementation for a trajectory
 
-    > A trajectory is the path that a massive object in motion follows through space as a function of time.
-    > from Wikipedia
+    > The system's evolving state over time traces a path 
+    > (a phase space trajectory for the system) through the high-dimensional space. 
+    > The phase space trajectory represents the set of states 
+    > compatible with starting from one particular initial condition, 
+    > located in the full phase space that represents the set of states compatible with starting from any initial condition. 
+    > https://en.wikipedia.org/wiki/Phase_space
 
-    A massive object this filter can track has its size in a 2D space, and moves with a constant acceleration.
+    A phase space object this filter can track has its own size in a 2D space, and moves with a constant acceleration.
 
     Variances in P, Q, and R are calculated from the given object size to make configurations easier.
     Note that R is a simplified version, where only the highest order values are non zero.
@@ -100,14 +104,14 @@ class TrajectoryFilter(KalmanFilter):
         return self._object_size_error_ratio
     
 
-class MassiveObject(object):
-    """ MassiveObject moves, and leaves a trajectory.
+class PhaseSpaceObject(object):
+    """ PhaseSpaceObject moves, and leaves a trajectory.
     """
 
     _very_small_value = 0.000001
 
     def __init__(self, x0, object_size, object_size_error_ratio=0.5, decay=0.1, coefficient=0.5, maximum_heading_diff_allowed_in_pi=0.333):
-        super(MassiveObject, self).__init__()
+        super(PhaseSpaceObject, self).__init__()
         self._filter = TrajectoryFilter(x0, object_size, object_size_error_ratio, decay=decay, coefficient=coefficient)
         self._maximum_heading_diff_allowed = math.pi * maximum_heading_diff_allowed_in_pi
         # histories
@@ -123,7 +127,7 @@ class MassiveObject(object):
 
     @property
     def location(self):
-        """ the current position of this MassiveObject instance
+        """ the current position of this PhaseSpaceObject instance
 
         An estimated current location based on this filter's prediction and a predicted position at time t
 
@@ -143,7 +147,7 @@ class MassiveObject(object):
 
     @property
     def direction(self):
-        """ the direction of this MassiveObject instance
+        """ the direction of this PhaseSpaceObject instance
 
         A direction ranges from -pi(-180) to pi(180),
 
@@ -156,11 +160,11 @@ class MassiveObject(object):
         if self.observed_travel_distance < max(*self._filter.object_size):
             return None
 
-        return MassiveObject.radian_from_points(self._xs[0], self._xs[-1])
+        return PhaseSpaceObject.radian_from_points(self._xs[0], self._xs[-1])
 
     @property
     def heading(self):
-        """ the current direction of this MassiveObject instance
+        """ the current direction of this PhaseSpaceObject instance
 
         A heading ranges from -pi(-180) to pi(180),
 
@@ -169,7 +173,7 @@ class MassiveObject(object):
         if len(self._xs) < 2:
             return None
 
-        return MassiveObject.radian_from_points(self._xs[-2], self._xs[-1])
+        return PhaseSpaceObject.radian_from_points(self._xs[-2], self._xs[-1])
 
     @staticmethod
     def radian_from_points(from_point, to_point):
@@ -217,7 +221,7 @@ class MassiveObject(object):
         if start is None or end is None:
             return -1
 
-        return MassiveObject.distance_from_points(start, end)
+        return PhaseSpaceObject.distance_from_points(start, end)
 
     @staticmethod
     def distance_from_points(from_point, to_point):
@@ -260,13 +264,13 @@ class MassiveObject(object):
         if current_direction is None:
             diff_heading = -1.0
         else:
-            next_heading = MassiveObject.radian_from_points(from_point, z)
+            next_heading = PhaseSpaceObject.radian_from_points(from_point, z)
             diff_heading = abs(next_heading - current_direction)
             if diff_heading > math.pi:
                 diff_heading -= math.pi
 
         # check distance
-        distance = MassiveObject.distance_from_points(from_point, z)
+        distance = PhaseSpaceObject.distance_from_points(from_point, z)
 
         # accept if both residuals are within 99% range(3 * std_devs)
         # but reject when the heading difference and the moving distance are more than their thresholds
