@@ -9,12 +9,16 @@ from filterpy.kalman import KalmanFilter
 class TrajectoryFilter(KalmanFilter):
     """ A KalmanFilter implementation for a trajectory
 
-    > The system's evolving state over time traces a path 
-    > (a phase space trajectory for the system) through the high-dimensional space. 
-    > The phase space trajectory represents the set of states 
-    > compatible with starting from one particular initial condition, 
-    > located in the full phase space that represents the set of states compatible with starting from any initial condition. 
-    > https://en.wikipedia.org/wiki/Phase_space
+    TrajectoryFilter is a base class to track an object that leaves a trajectory.
+
+    A trajectory here means the following according to Wikipedia.
+
+        The system's evolving state over time traces a path 
+        (a phase space trajectory for the system) through the high-dimensional space. 
+        The phase space trajectory represents the set of states 
+        compatible with starting from one particular initial condition, 
+        located in the full phase space that represents the set of states compatible with starting from any initial condition. 
+        https://en.wikipedia.org/wiki/Phase_space
 
     A phase space object this filter can track has its own size in a 2D space, and moves with a constant acceleration.
 
