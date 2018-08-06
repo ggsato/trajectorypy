@@ -164,7 +164,7 @@ class PhaseSpaceObject(object):
         if self.observed_travel_distance < max(*self._filter.object_size):
             return None
 
-        return PhaseSpaceObject.radian_from_points(self._xs[0], self._xs[-1])
+        return PhaseSpaceObject.radian_from_points([self._xs[0][0], self._xs[0][3]], [self._xs[-1][0], self._xs[-1][3]])
 
     @property
     def heading(self):
@@ -177,7 +177,7 @@ class PhaseSpaceObject(object):
         if len(self._xs) < 2:
             return None
 
-        return PhaseSpaceObject.radian_from_points(self._xs[-2], self._xs[-1])
+        return PhaseSpaceObject.radian_from_points([self._xs[-2][0], self._xs[-2][3]], [self._xs[-1][0], self._xs[-1][3]])
 
     @staticmethod
     def radian_from_points(from_point, to_point):

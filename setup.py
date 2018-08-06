@@ -14,7 +14,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='trajectorypy',
-    version='1.0.0-a4',
+    version='1.0.0-a5',
     description='trajectorypy is a library to track a phase state object that leaves a trajectory',
     long_description=long_description, 
     url='https://github.com/ggsato/trajectorypy',
